@@ -1,0 +1,7 @@
+unidecode
+numpy
+requests
+scipy
+networkx
+matplotlib
+tqdm
