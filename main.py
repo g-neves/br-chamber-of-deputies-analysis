@@ -12,9 +12,10 @@ import matplotlib.pyplot as plt
 
 if __name__ == '__main__':
     #download_base()
-    #create_votes_matrix()
+    create_votes_matrix()
     #create_weights_matrix()
     # perform_backbone()
+    exit()
 
     W_matrices = []
     for year in range(2001, 2022+1):

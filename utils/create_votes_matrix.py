@@ -1,9 +1,14 @@
 import unidecode
 import json
 import numpy as np
-
+import os
 
 def create_votes_matrix(save_backup=True):
+    
+    # Creates the backup dir
+    BACKUP_PATH = os.path.join('backups')
+    if not os.path.exists(BACKUP_PATH):
+        os.mkdir(BACKUP_PATH)
     
     # Auxiliar function to standardize the deputies
     # names
@@ -13,7 +18,7 @@ def create_votes_matrix(save_backup=True):
         
         return name
 
-    BASE_DATA = './data/votacoesVotos-{}.json'
+    BASE_DATA = '../data/votacoesVotos-{}.json'
 
     # Dict in which the data will be stored according to its year
     data_dict = {}
@@ -55,6 +60,23 @@ def create_votes_matrix(save_backup=True):
             # Inserting the deputy party
             deputies_dict[year][deputy_name]['party'] = vote['deputado_']['siglaPartido']
         
+        # Saves the backup for the deputies dict
+        if save_backup:
+            DEPUTIES_DICT_PATH = os.path.join(BACKUP_PATH, 'deputies_dict_backup')
+            if not os.path.exists(DEPUTIES_DICT_PATH):
+                os.mkdir(DEPUTIES_DICT_PATH)
+            with open(os.path.join(DEPUTIES_DICT_PATH, f'deputies_dict_{year}.json'), 'w') as f:
+                json_object = json.dumps(deputies_dict[year], indent=4)
+                f.write(json_object)
+                print(f'>>> deputies_dict_{year}.json saved.')
+
+            PROJECTS_PATH = os.path.join(BACKUP_PATH, 'projects_backup')
+            if not os.path.exists(PROJECTS_PATH):
+                os.mkdir(PROJECTS_PATH)
+            with open(os.path.join(PROJECTS_PATH, f'projects_{year}.txt'), 'w') as f:
+                f.write(str(projects_dict[year]))
+                print(f'>>> projects_{year}.txt saved.')
+
         
         # n_rows: number of deputies of given year
         # n_cols: number of projects of given year
@@ -91,6 +113,9 @@ def create_votes_matrix(save_backup=True):
         A_dict[year] = A
 
         if save_backup:
+            if not os.path.exists(os.path.join(BACKUP_PATH, 'A_backup')):
+                os.mkdir(os.path.join(BACKUP_PATH, 'A_backup'))
+
             np.savetxt(f'./backups/A_backup/A_{year}.txt', A)
             print(f'>>> A_{year}.txt saved.')
 
